@@ -1,6 +1,6 @@
 FROM python:3.10.12-slim-bullseye
 
-WORKDIR /main
+WORKDIR /app
 
 COPY requirements.txt requirements.txt
 
@@ -13,8 +13,8 @@ RUN apt-get update && \
     pip install --no-cache-dir -r requirements.txt
 
 COPY . .
-RUN chmod +x ./main.py
+RUN chmod +x ./app.py
 
 RUN chmod -R 777 /app
 CMD screen -d -m python3 check.py
-CMD uvicorn main:main --host 0.0.0.0 --port 7860
+CMD uvicorn app:app --host 0.0.0.0 --port 7860
