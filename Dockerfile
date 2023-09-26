@@ -1,19 +1,28 @@
+# Use a specific Python 3.10 version
 FROM python:3.10.12-slim-bullseye
-      
-WORKDIR /app      
-      
-COPY requirements.txt requirements.txt    
-  
-RUN python3 -m venv venv  
-ENV PATH="/app/venv/bin:$PATH"  
-  
-RUN apt-get update && \    
-    apt-get install -y --no-install-recommends build-essential libffi-dev cmake libcurl4-openssl-dev nodejs screen && \    
-    pip3 install --no-cache-dir -r requirements.txt      
-      
-COPY . .
-RUN chmod +x ./app.py
 
-RUN chmod -R 777 /app
-CMD screen -d -m python3 check.py
-CMD uvicorn app:app --host 0.0.0.0 --port 7860
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements file and install dependencies
+COPY requirements.txt requirements.txt
+RUN python -m venv venv \
+    && . venv/bin/activate \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Install additional system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libffi-dev \
+    cmake \
+    libcurl4-openssl-dev \
+    screen
+
+# Copy the rest of the application code
+COPY . .
+
+# Make sure app.py is executable
+RUN chmod +x app.py
+
+# Set the default command to run your application
+CMD [ "python", "app.py" ]
