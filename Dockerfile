@@ -4,6 +4,9 @@ FROM python:3.10.12-slim-bullseye
 # Set the working directory
 WORKDIR /app
 
+# Update pip
+RUN python -m pip install --upgrade pip
+
 # Copy the requirements file and install dependencies
 COPY requirements.txt requirements.txt
 RUN python -m venv venv \
